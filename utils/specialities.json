@@ -1,0 +1,35 @@
+{
+    "Python": [
+        "Python",
+        "Python Backend",
+        "Python, Backend",
+        "Backend (Python)"
+    ],
+    "Backend": [
+        "Backend",
+        "Python Backend",
+        "Back-end/ML/DS Python",
+        "Бэкенд"
+    ],
+    "Data Engineer": [
+        "Data Engineer",
+        "Дата Инженер",
+        "Data Engineer (Python, Scala)",
+        "Data Engineer, Дата Инженер, Python"
+    ],
+    "Data Science (DS, ML)": [
+        "Data Science (DS, ML)",
+        "Back-end/ML/DS Python",
+        "Python Backend, QA, Data Science (DS, ML)"
+    ],
+    "QA Automation": [
+        "QA Automation",
+        "QA Automation, Java, Python"
+    ],
+    "FastAPI Flask Django": [
+        "FastAPI Flask Django"
+    ],
+    "Team lead python ml": [
+        "Team lead python ml"
+    ]
+}

@@ -1,0 +1,20 @@
+.env
+__pycache__
+*.pyc
+*.pyo
+help.txt
+test.py
+webhook.log
+rate copy.txt
+rate_table.py
+/texts
+/tests
+/myenv
+downloads
+add_mentors.py
+links_handler.py
+parsers
+processing_link.py
+.pylintrc
+dump.rdb
+session_name.session
