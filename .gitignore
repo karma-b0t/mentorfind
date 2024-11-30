@@ -1,3 +1,9 @@
+# Ignore everything in the downloads folder
+downloads/*
+
+# But do not ignore the .gitignore file in the downloads folder
+!downloads/.gitignore
+
 .idea/*
 
 .env
@@ -12,7 +18,6 @@ rate_table.py
 /texts
 /tests
 /myenv
-downloads
 add_mentors.py
 links_handler.py
 parse_business_card.py

@@ -357,23 +357,22 @@ async def handle_data_after_advice(advice, state, message):
         mentors_list_from_advice=mentors_list
     )  # Сохраняем список менторов в state (redis)
 
-    await bot.send_message(
-        chat_id=message.chat.id, text=advice
-    )  # Отправляем совет пользователю
-    await bot.send_message(
-        chat_id=message.chat.id,
-        text="Посмотрим подробнее о менторах?",
-        reply_markup=InlineKeyboardMarkup(
-            inline_keyboard=[
-                [
-                    InlineKeyboardButton(
-                        text="Посмотреть подробнее",
-                        callback_data="get_mentors_list_from_advice",
-                    )
-                ]
-            ]
-        ),
-    )
+    links_list = await state.get_data()
+    mentors_list_from_advice = links_list["mentors_list_from_advice"]
+    for link in mentors_list_from_advice:
+        mentor_dict = GetDataFromDB.get_mentor_by_link_from_db(session, link)
+        mentor = mentor_dict.get("description")
+        mentor_id = mentor_dict.get("id")
+        await state.set_state(UserStates.get_mentor_info)
+        btn = InlineKeyboardButton(
+            text="Посмотреть отзывы", callback_data=f"reviews: {mentor_id}"
+        )
+        await bot.send_message(
+            message.chat.id,
+            f"{mentor}",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[[btn]]),
+        )
+
     create_task(
         delayed_message(
             bot, message.chat.id, 300, await get_text("did_you_choose_mentor"), state
