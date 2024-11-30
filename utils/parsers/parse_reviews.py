@@ -2,9 +2,9 @@ from telethon.sync import TelegramClient
 import re
 
 # Замени на реальные данные
-api_id = '29309480'
-api_hash = '91a82ff3dc5d7ab867ed694f090c9d79'
-channel_username = -1001759725065
+api_id = ''
+api_hash = ''
+channel_username = -
 
 # Создаем клиент с уникальным session_name
 client = TelegramClient('session_name', api_id, api_hash)
