@@ -1,10 +1,11 @@
 from telethon.sync import TelegramClient
 import re
+from decouple import config
 
 # Замени на реальные данные
-api_id = ''
-api_hash = ''
-channel_username = -
+api_id = config("api_id")
+api_hash = config("api_hash")
+channel_username = config("channel_username")
 
 # Создаем клиент с уникальным session_name
 client = TelegramClient('session_name', api_id, api_hash)
