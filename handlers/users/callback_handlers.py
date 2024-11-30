@@ -259,18 +259,30 @@ async def get_mentors_list_from_advice(callback_query, state: FSMContext):
     """Функция для получения списка менторов по совету от AI"""
     links_list = await state.get_data()
     mentors_list_from_advice = links_list["mentors_list_from_advice"]
+    found_mentors = False
 
     for link in mentors_list_from_advice:
         mentor_dict = GetDataFromDB.get_mentor_by_link_from_db(session, link)
+        if mentor_dict is None:
+            logger.info(f"No mentor info found for link: {link}")
+            continue
+            
         mentor = mentor_dict.get("description")
         mentor_id = mentor_dict.get("id")
-        callback_query.data = f"id: {mentor_id}"
-        await state.set_state(UserStates.get_mentor_info)
-        btn = InlineKeyboardButton(
-            text="Посмотреть отзывы", callback_data=f"reviews: {mentor_id}"
-        )
+        if mentor and mentor_id:
+            found_mentors = True
+            await state.set_state(UserStates.get_mentor_info)
+            btn = InlineKeyboardButton(
+                text="Посмотреть отзывы", callback_data=f"reviews: {mentor_id}"
+            )
+            await bot.send_message(
+                callback_query.from_user.id,
+                f"{mentor}",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[[btn]]),
+            )
+    
+    if not found_mentors:
         await bot.send_message(
             callback_query.from_user.id,
-            f"{mentor}",
-            reply_markup=InlineKeyboardMarkup(inline_keyboard=[[btn]]),
+            "К сожалению, не удалось найти подходящих менторов. Попробуйте изменить критерии поиска."
         )
