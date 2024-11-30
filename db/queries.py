@@ -383,7 +383,7 @@ class GetDataFromDB:
             }
             print('mentor_info:', mentor_info)
             return {
-                "description": f'Имя: {mentor_info["name"]}\nСпециальность: {mentor_info["speciality"]}\nЦена: {mentor_info["price"]}\nКонтакты: {mentor_info["contact"]}\nОписание: {mentor_info["description"]}',
+                "description": f'Имя: {mentor_info["name"]}\nСпециальность: {mentor_info["speciality"]}\nОписание: {mentor_info["description"]}',
                 "id": mentor_info["id"],
             }
         except Exception as e:
