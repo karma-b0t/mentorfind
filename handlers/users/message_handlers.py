@@ -358,9 +358,6 @@ async def handle_data_after_advice(advice, state, message):
     )  # Сохраняем список менторов в state (redis)
 
     await bot.send_message(
-        chat_id=message.chat.id, text=advice
-    )  # Отправляем совет пользователю
-    await bot.send_message(
         chat_id=message.chat.id,
         text="Посмотрим подробнее о менторах?",
         reply_markup=InlineKeyboardMarkup(
