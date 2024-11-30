@@ -1,19 +1,25 @@
-# Используем официальный образ Python
-FROM python:3.11-slim
+# Use official Python image
+FROM python:3.12-slim
 
-# Устанавливаем рабочую директорию
+# Choose working dir
 WORKDIR /app
 
-# Копируем файлы проекта в контейнер
-COPY requirements.txt /app/
+# Install system requirments
+RUN apt-get update && apt-get install -y libpq-dev unzip && rm -rf /var/lib/apt/lists/*
 
-# Устанавливаем зависимости
-RUN pip install --no-cache-dir -r requirements.txt
+# Add requirements file to image
+COPY requirements.txt  .
 
-COPY . /app
+# Install python libraries
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pip pip install -r requirements.txt
 
-# Устанавливаем переменные окружения
-ENV PYTHONUNBUFFERED=1
+# Create a group and user
+RUN chmod 777 /app
 
-# Команда для запуска приложения
+# Add Python enviroments
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+# Run application
 CMD ["python", "webhook.py"]
