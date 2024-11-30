@@ -1,3 +1,29 @@
+
+## Local Run Prerequisites
+- create `.env` file in the root directory
+- fill-in following values:
+```
+BOT_TOKEN = 
+DATABASE=
+DB_HOST=
+OPENAI_API_KEY = 
+RESUME_ASSISTANT_ID = 
+QUIZZ_ASSISTANT_ID = 
+ROADMAP_ASSISTANT_ID = 
+WEBHOOK_URL=
+REDIS_URL = "redis://redis:6379/0"
+```
+
+- install `ngrok` tool
+
+## Local Run with Docker
+- run:
+```
+docker compose up --build
+```
+
+
+## Local Run
 Для запуска приложения:
 
 активируем venv
