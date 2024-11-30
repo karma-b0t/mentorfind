@@ -23,11 +23,6 @@ REDIS_URL = "redis://redis:6379/0"
 - install `pgadmin` tool.
 
 ## Local Run with Docker
-- run:
-```
-docker compose up --build
-```
-
 - run ngrok:
 `ngrok http 80`
 
@@ -38,6 +33,11 @@ docker compose up --build
 - run `set commands` once:
 1. run `pip install -r requirements.txt`
 2. run `py set_commands.py`
+
+- run:
+```
+docker compose up --build
+```
 
 ## Local Run
 Для запуска приложения:
