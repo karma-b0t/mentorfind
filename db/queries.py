@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+from loguru import logger
 
 from utils.parsers import parse_reviews
 from .models import Mentor, User
@@ -372,7 +373,11 @@ class GetDataFromDB:
                 Mentor.contact.ilike(f"%{nick}%")
             )
             mentor = mentor_query.first()
-            print('mentor:', mentor)
+            
+            if mentor is None:
+                logger.info(f"No mentor found with nick: {nick}")
+                return None
+            
             mentor_info = {
                 "id": mentor.id,
                 "name": mentor.name,
@@ -381,15 +386,18 @@ class GetDataFromDB:
                 "contact": mentor.contact,
                 "description": mentor.description,
             }
-            print('mentor_info:', mentor_info)
+            session.commit()
             return {
                 "description": f'Имя: {mentor_info["name"]}\nСпециальность: {mentor_info["speciality"]}\nОписание: {mentor_info["description"]}',
                 "id": mentor_info["id"],
             }
         except Exception as e:
-            print(f"An error occurred on step get_mentor_by_nick_from_db: {e}")
+            session.rollback()  # Roll back the failed transaction
+            logger.error(f"An error occurred on step get_mentor_by_nick_from_db: {e}")
             return None
-        
+        finally:
+            session.close()  # Ensure the session is closed
+
 
 if __name__ == '__main__':
     GetDataFromDB.get_mentor_by_link_from_db(session, 'artarba')
