@@ -250,7 +250,7 @@ async def quizz(message: Message, state: FSMContext):
     current_question = user_data.get("current_question", 1)
 
     # Проверяем, есть ли следующий вопрос
-    if current_question < 17:
+    if current_question < 5:
         previous_question_text = await get_text(f"quizz_{current_question}")
         data = await state.update_data(
             {
