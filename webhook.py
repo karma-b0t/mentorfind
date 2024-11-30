@@ -61,19 +61,20 @@ async def webhook_handler(update: Update):
 
                 elif current_state == UserStates().quiz_in_progress:
                     await quizz(update.message, state)
-                elif (
-                    current_state == ChooseMentor.choose_mentor and text.lower() == "да"
-                ):
-                    await state.set_state(ChooseMentor.mentor_chosen)
-                    await mentor_chosen(update.message, state)
-                elif (
-                    current_state == ChooseMentor.choose_mentor
-                    and text.lower() == "нет"
-                ):
-                    await state.set_state(ChooseMentor.mentor_not_chosen)
-                    await mentor_not_chosen(update.message, state)
+
+                elif current_state == ChooseMentor.choose_mentor:
+                    if text.lower() == "да":
+                        await state.set_state(ChooseMentor.mentor_chosen)
+                        await mentor_chosen(update.message, state)
+                    elif text.lower() == "нет":
+                        await state.set_state(ChooseMentor.mentor_not_chosen)
+                        await mentor_not_chosen(update.message, state)
+                    else:
+                        await got_wrong_data(update.message, state)
+                        
                 elif current_state == ChooseMentor.mentor_chosen:
                     await mentor_chosen(update.message, state)
+
                 elif current_state == ChooseMentor.mentor_info:
                     await state.update_data(mentor_info=text)
                     await say_goodbye(update.message, state)
@@ -102,7 +103,7 @@ async def webhook_handler(update: Update):
             elif callback_data.startswith("upload_cv"):
                 await bot.send_message(
                     callback_query.from_user.id,
-                    text="Просто подгрузите свое резюме в формате .docx или .pdf"
+                    text="Просто подгрузите свое резюме в формате .docx или .pdf",
                 )
             elif callback_data.startswith("get_mentors_list_from_advice"):
                 await get_mentors_list_from_advice(callback_query, state)
@@ -156,12 +157,12 @@ if __name__ == "__main__":
     TOKEN = config("BOT_TOKEN")
     WEBHOOK_URL = config("WEBHOOK_URL")
 
-    # print("TOKEN:", TOKEN)
-    # print("WEBHOOK_URL:", WEBHOOK_URL)
+    logger.info("TOKEN:", TOKEN)
+    logger.info("WEBHOOK_URL:", WEBHOOK_URL)
     # Настройка вебхука
     url = f"https://api.telegram.org/bot{TOKEN}/setWebhook"
     payload = {
-        "url": f'{WEBHOOK_URL}/webhook',
+        "url": f"{WEBHOOK_URL}/webhook",
         "allowed_updates": [
             "message",
             "callback_query",
@@ -179,4 +180,4 @@ if __name__ == "__main__":
     # Запуск сервера FastAPI на порту 8000
     import uvicorn
 
-    uvicorn.run("webhook:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("webhook:app", host="0.0.0.0", port=80, reload=True)

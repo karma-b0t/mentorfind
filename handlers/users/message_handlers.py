@@ -379,3 +379,22 @@ async def handle_data_after_advice(advice, state, message):
             bot, message.chat.id, 300, await get_text("did_you_choose_mentor"), state
         )
     )
+
+async def got_wrong_data(message: Message, state: FSMContext):
+    """
+    Handles the case when the user provides incorrect data.
+
+    This asynchronous function sends a message to the user indicating that the data provided was incorrect and prompts the user to try again. It then sets the state to `UserStates.get_specialities_list`.
+
+    Args:
+        message (Message): The incoming message object from the user.
+        state (FSMContext): The finite state machine context for managing user states.
+
+    Returns:
+        None
+    """
+    await bot.send_message(
+        chat_id=message.chat.id,
+        text="Извините, я не понял ваш ответ. Пожалуйста, попробуйте еще раз."
+    )
+    await state.set_state(UserStates.get_specialities_list)

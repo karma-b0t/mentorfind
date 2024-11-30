@@ -8,7 +8,8 @@ from .message_handlers import (
     mentor_chosen,
     mentor_not_chosen,
     say_goodbye,
-    start
+    start,
+    got_wrong_data
 )
 from .callback_handlers import (
     get_mentors_with_specialities,

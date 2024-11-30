@@ -1,33 +1,30 @@
-version: '3.11'
 
 services:
   mentor_bot:
     build: .
-    container_name: mentor_bot
-    environment:
-      - DATABASE_URL=postgresql://postgres:123@db:5432/mentors_1
-      - REDIS_URL=redis://redis:6380/0
+    env_file:
+      - .env
     depends_on:
       - db
       - redis
     volumes:
-      - .:/mentor_bot
+      - .:/app
     ports:
       - "80:80"
 
   db:
     image: postgres:15
-    container_name: mentors
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: mentors
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
 
   redis:
     image: redis:6.2
-    container_name: redis
     ports:
       - "6380:6379"
 
