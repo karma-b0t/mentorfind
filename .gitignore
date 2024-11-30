@@ -13,7 +13,9 @@ rate_table.py
 downloads
 add_mentors.py
 links_handler.py
-parsers
+parse_business_card.py
+parse_helper.txt
+parse_notion.py
 processing_link.py
 .pylintrc
 dump.rdb
