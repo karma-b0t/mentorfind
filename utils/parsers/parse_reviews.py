@@ -53,4 +53,4 @@ import asyncio
 
 if __name__ == '__main__':
     full_name = 'Андрей Кудинов'
-    asyncio.run(search_reviews(full_name))
+#     asyncio.run(search_reviews(full_name))
