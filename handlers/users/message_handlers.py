@@ -35,9 +35,11 @@ async def start(message: Message, state: FSMContext):
     """
     await state.clear()
     text = await get_text("on_start_text")
+    download_cv_text = await get_text("download_cv_text")
+    fill_quizz_text = await get_text("fill_quizz_text")
     btns = [
-        [InlineKeyboardButton(text="Загрузить резюме", callback_data="upload_cv")],
-        [InlineKeyboardButton(text="Заполнить анкету", callback_data="start_quizz")],
+        [InlineKeyboardButton(text=download_cv_text, callback_data="upload_cv")],
+        [InlineKeyboardButton(text=fill_quizz_text, callback_data="start_quizz")],
     ]
     inline_kb = InlineKeyboardMarkup(inline_keyboard=btns)
     await bot.send_message(message.chat.id, text=text, reply_markup=inline_kb)
@@ -263,9 +265,10 @@ async def quizz(message: Message, state: FSMContext):
         await state.update_data(current_question=current_question + 1)
     else:
         # Завершение анкеты после последнего вопроса
+        end_of_quizz_text = await get_text("end_of_quizz_text")
         await bot.send_message(
             chat_id=message.chat.id,
-            text="Спасибо за ответы! Дайте мне немного времени, я подберу подходящего ментора!",
+            text=end_of_quizz_text,
         )
         data = await state.update_data(
             {
@@ -296,8 +299,9 @@ async def mentor_chosen(message: Message, state: FSMContext):
         None
     """
     await state.set_state(ChooseMentor.mentor_info)
+    ask_for_mentor_name_text = await get_text("ask_for_mentor_name_text")
     await bot.send_message(
-        chat_id=message.chat.id, text="Напишите пожалуйста имя и ник ментора"
+        chat_id=message.chat.id, text=ask_for_mentor_name_text
     )
 
 
@@ -314,9 +318,10 @@ async def mentor_not_chosen(message: Message, state: FSMContext):
     Returns:
         None
     """
+    regret_text = await get_text("regret_text")
     await bot.send_message(
         chat_id=message.chat.id,
-        text="Очень жаль! Давайте поищем еще! Выберите ментора из списка",
+        text=regret_text,
     )
     await state.set_state(UserStates.get_specialities_list)
 
@@ -371,8 +376,9 @@ async def handle_data_after_advice(advice, state, message):
         if mentor and mentor_id:
             found_mentors = True
             await state.set_state(UserStates.get_mentor_info)
+            watch_reviews_text = await get_text("watch_reviews_text")
             btn = InlineKeyboardButton(
-                text="Посмотреть отзывы", callback_data=f"reviews: {mentor_id}"
+                text=watch_reviews_text, callback_data=f"reviews: {mentor_id}"
             )
             await bot.send_message(
                 message.chat.id,
@@ -381,9 +387,10 @@ async def handle_data_after_advice(advice, state, message):
             )
 
     if not found_mentors:
+        regret_mentors_not_found_text = await get_text("regret_mentors_not_found_text")
         await bot.send_message(
             message.chat.id,
-            "К сожалению, не удалось найти подходящих менторов. Попробуйте изменить критерии поиска."
+            regret_mentors_not_found_text
         )
         return
 
@@ -406,8 +413,9 @@ async def got_wrong_data(message: Message, state: FSMContext):
     Returns:
         None
     """
+    did_not_understend_text = await get_text("did_not_understend_text")
     await bot.send_message(
         chat_id=message.chat.id,
-        text="Извините, я не понял ваш ответ. Пожалуйста, попробуйте еще раз."
+        text=did_not_understend_text
     )
-    await state.set_state(UserStates.get_specialities_list)
+    # await state.set_state(UserStates.get_specialities_list)

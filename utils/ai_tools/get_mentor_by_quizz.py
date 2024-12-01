@@ -1,5 +1,6 @@
 from openai import OpenAI
 from decouple import config
+from loguru import logger
 
 OPENAI_API_KEY = config("OPENAI_API_KEY")
 assistant_id = config("QUIZZ_ASSISTANT_ID")
@@ -23,7 +24,7 @@ async def get_advice_from_quizz(input_text):
     )
 
     # The thread now has a vector store with that file in its tool resources.
-    print("thread.tool_resources.file_search", thread.tool_resources.file_search)
+    logger.info("thread.tool_resources.file_search", thread.tool_resources.file_search)
 
     run = client.beta.threads.runs.create_and_poll(
         thread_id=thread.id, assistant_id=assistant_id
@@ -44,8 +45,8 @@ async def get_advice_from_quizz(input_text):
             cited_file = client.files.retrieve(file_citation.file_id)
             citations.append(f"[{index}] {cited_file.filename}")
 
-    print("message_content.value", message_content.value)
-    print("\n".join(citations))
+    logger.info("message_content.value", message_content.value)
+    logger.info("\n".join(citations))
     return message_content.value
 
 

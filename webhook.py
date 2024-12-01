@@ -10,6 +10,7 @@ from aiogram import F
 from aiogram.fsm.storage.base import BaseStorage, StorageKey
 from aiogram.fsm.context import FSMContext
 from utils.states import UserStates, ChooseMentor
+from utils.text_utils.get_text_module import get_text
 
 app = FastAPI()
 
@@ -63,10 +64,10 @@ async def webhook_handler(update: Update):
                     await quizz(update.message, state)
 
                 elif current_state == ChooseMentor.choose_mentor:
-                    if text.lower() == "да":
+                    if text.lower() == "да" or text.lower() == "yes":
                         await state.set_state(ChooseMentor.mentor_chosen)
                         await mentor_chosen(update.message, state)
-                    elif text.lower() == "нет":
+                    elif text.lower() == "нет" or text.lower() == "no":
                         await state.set_state(ChooseMentor.mentor_not_chosen)
                         await mentor_not_chosen(update.message, state)
                     else:
@@ -101,9 +102,10 @@ async def webhook_handler(update: Update):
                 await state.clear()
                 await start_quizz(callback_query, state)
             elif callback_data.startswith("upload_cv"):
+                download_yuor_cv_text = await get_text("download_yuor_cv_text")
                 await bot.send_message(
                     callback_query.from_user.id,
-                    text="Просто подгрузите свое резюме в формате .docx или .pdf",
+                    text=download_yuor_cv_text,
                 )
             elif callback_data.startswith("get_mentors_list_from_advice"):
                 await get_mentors_list_from_advice(callback_query, state)

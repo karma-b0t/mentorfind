@@ -175,12 +175,13 @@ async def get_mentor_info(callback_query, state: FSMContext):
     mentor_info = GetDataFromDB.get_mentor_info_by_id_from_db(
         session, mentor_id
     )  # Получаем информацию о менторе
-    text = await get_text("mentor_info_text")
+    watch_reviews_text = await get_text("watch_reviews_text")
+    back_text = await get_text("back_text")
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Назад",
+                    text=back_text,
                     callback_data=(
                         f"speciality: {speciality}"
                         if speciality
@@ -190,7 +191,7 @@ async def get_mentor_info(callback_query, state: FSMContext):
             ],
             [
                 InlineKeyboardButton(
-                    text="Посмотреть отзывы", callback_data=f"reviews: {mentor_id}"
+                    text=watch_reviews_text, callback_data=f"reviews: {mentor_id}"
                 )
             ],
         ]
@@ -219,7 +220,8 @@ async def send_mentors_reviews(callback_query, state: FSMContext, page=0):
 
     # Если отзывов нет, отправляем сообщение
     if not reviews_dict:
-        await bot.send_message(telegram_id, "У ментора нет отзывов")
+        no_reviews_text = await get_text("no_reviews_text")
+        await bot.send_message(telegram_id, no_reviews_text)
         return
 
     # Проход по ключам словаря и получение отзывов
@@ -236,22 +238,25 @@ async def send_mentors_reviews(callback_query, state: FSMContext, page=0):
     except Exception as e:
         logger.info(f"Ошибка при получении отзывов: {e}")
         traceback.print_exc()
+        error_getting_reviews_text = await get_text("error_getting_reviews_text")
         await bot.send_message(
-            telegram_id, "Кажется, возникла ошибка при получении отзывов."
+            telegram_id, error_getting_reviews_text
         )
-
+    back_text = await get_text("back_text")
     # Кнопки для возврата
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Назад", callback_data=f"mentor_id: {mentor_id}"
+                    text=back_text, callback_data=f"mentor_id: {mentor_id}"
                 )
             ],
         ]
     )
+    back_to_mentor_info_text=await get_text("back_to_mentor_info_text")
     await bot.send_message(
-        telegram_id, text="Назад к информации о менторе", reply_markup=keyboard
+        
+        telegram_id, text=back_to_mentor_info_text, reply_markup=keyboard
     )
 
 
@@ -272,8 +277,9 @@ async def get_mentors_list_from_advice(callback_query, state: FSMContext):
         if mentor and mentor_id:
             found_mentors = True
             await state.set_state(UserStates.get_mentor_info)
+            wath_reviews_text = await get_text("watch_reviews_text")
             btn = InlineKeyboardButton(
-                text="Посмотреть отзывы", callback_data=f"reviews: {mentor_id}"
+                text=wath_reviews_text, callback_data=f"reviews: {mentor_id}"
             )
             await bot.send_message(
                 callback_query.from_user.id,
@@ -282,7 +288,8 @@ async def get_mentors_list_from_advice(callback_query, state: FSMContext):
             )
     
     if not found_mentors:
+        regret_mentors_not_found_text = await get_text("regret_mentors_not_found_text")
         await bot.send_message(
             callback_query.from_user.id,
-            "К сожалению, не удалось найти подходящих менторов. Попробуйте изменить критерии поиска."
+            regret_mentors_not_found_text
         )
