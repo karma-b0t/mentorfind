@@ -24,6 +24,8 @@ class UserStates(StatesGroup):
     quiz_in_progress = State()  # Состояние для заполнения анкеты
     finish_quizz = State()  # Состояние для завершения анкеты   
 
+    pick_up_interview_date = State()  # Состояние для выбора даты интервью
+
 
 class Pages(StatesGroup):
     next_page = State()  # Состояние для перехода на следующую страницу

@@ -175,7 +175,15 @@ async def get_mentor_info(callback_query, state: FSMContext):
     mentor_info = GetDataFromDB.get_mentor_info_by_id_from_db(
         session, mentor_id
     )  # Получаем информацию о менторе
-    watch_reviews_text = await get_text("watch_reviews_text")
+    reviews = GetDataFromDB.get_mentor_reviews_from_db(
+        session, mentor_id
+    )  # Получаем отзывы о менторе
+    first_3_reviews = reviews[:MAX_MESSAGE_LENGTH]
+    pick_up_mentor_text = await get_text("pick_up_mentor_text")
+    reviews = GetDataFromDB.get_mentor_reviews_from_db(
+        session, mentor_id
+    )  # Получаем отзывы о менторе
+    first_3_reviews = reviews[:MAX_MESSAGE_LENGTH]
     back_text = await get_text("back_text")
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
@@ -191,12 +199,13 @@ async def get_mentor_info(callback_query, state: FSMContext):
             ],
             [
                 InlineKeyboardButton(
-                    text=watch_reviews_text, callback_data=f"reviews: {mentor_id}"
+                    text=pick_up_mentor_text, callback_data=f"mentor_picked_up: {mentor_id}"
                 )
             ],
         ]
     )
-    await bot.send_message(telegram_id, f"{mentor_info}", reply_markup=keyboard)
+    await bot.send_message(telegram_id, f"{mentor_info}\n<blockquote>{first_3_reviews}</blockquote>", 
+                           reply_markup=keyboard, parse_mode='HTML' )
 
 
 async def send_mentors_reviews(callback_query, state: FSMContext, page=0):
@@ -277,9 +286,9 @@ async def get_mentors_list_from_advice(callback_query, state: FSMContext):
         if mentor and mentor_id:
             found_mentors = True
             await state.set_state(UserStates.get_mentor_info)
-            wath_reviews_text = await get_text("watch_reviews_text")
+            pick_up_mentor_text = await get_text("pick_up_mentor_text")
             btn = InlineKeyboardButton(
-                text=wath_reviews_text, callback_data=f"reviews: {mentor_id}"
+                text=pick_up_mentor_text, callback_data=f"mentor_picked_up: {mentor_id}"
             )
             await bot.send_message(
                 callback_query.from_user.id,
@@ -293,3 +302,14 @@ async def get_mentors_list_from_advice(callback_query, state: FSMContext):
             callback_query.from_user.id,
             regret_mentors_not_found_text
         )
+
+
+async def mentor_picked_up(callback_query, state: FSMContext):
+    """Функция для отправки сообщения о том, что ментор выбран"""
+    choose_interview_date_text = await get_text("choose_interview_date_text")
+    link = 'https://calendar.google.com/calendar/u/0/r?pli=1'
+    btn = InlineKeyboardButton(
+        text=choose_interview_date_text, url=link
+    )
+    await state.set_state(UserStates.pick_up_interview_date)
+    await bot.send_message(callback_query.from_user.id, choose_interview_date_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=[[btn]]))

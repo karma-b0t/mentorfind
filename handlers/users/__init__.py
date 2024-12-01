@@ -18,5 +18,6 @@ from .callback_handlers import (
     get_mentor_info,
     process_page_callback,
     send_mentors_reviews,
-    get_mentors_list_from_advice
+    get_mentors_list_from_advice,
+    mentor_picked_up
 )

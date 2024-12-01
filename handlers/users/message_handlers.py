@@ -376,9 +376,9 @@ async def handle_data_after_advice(advice, state, message):
         if mentor and mentor_id:
             found_mentors = True
             await state.set_state(UserStates.get_mentor_info)
-            watch_reviews_text = await get_text("watch_reviews_text")
+            pick_up_mentor_text = await get_text("pick_up_mentor_text")
             btn = InlineKeyboardButton(
-                text=watch_reviews_text, callback_data=f"reviews: {mentor_id}"
+                text=pick_up_mentor_text, callback_data=f"mentor_picked_up: {mentor_id}"
             )
             await bot.send_message(
                 message.chat.id,

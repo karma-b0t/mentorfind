@@ -98,7 +98,7 @@ async def webhook_handler(update: Update):
             current_state = await state.get_state()
             print("state from Callback:", current_state)
             if callback_data.startswith("start_quizz"):
-                await state.set_state(UserStates().start_quizz.state)
+                await state.set_state(UserStates.start_quizz.state)
                 await state.clear()
                 await start_quizz(callback_query, state)
             elif callback_data.startswith("upload_cv"):
@@ -129,6 +129,8 @@ async def webhook_handler(update: Update):
                     await send_mentors_reviews(callback_query, state)
                 elif callback_data.startswith("mentor_id:"):
                     await get_mentor_info(callback_query, state)
+                elif callback_data.startswith("mentor_picked_up"):
+                    await mentor_picked_up(callback_query, state)
             elif current_state == UserStates.get_specialities_list.state:
                 if callback_data.startswith("speciality:"):
                     await get_mentors_with_specialities(callback_query, state)

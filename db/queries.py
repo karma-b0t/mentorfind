@@ -328,7 +328,7 @@ class GetDataFromDB:
                 "description": mentor.description,
                 "reviews": mentor.reviews,
             }
-            return f'Имя: {mentor_info["name"]}\nСпециальность: {mentor_info["speciality"]}\nЦена: {mentor_info["price"]}\nКонтакты: {mentor_info["contact"]}\nОписание: {mentor_info["description"]}'
+            return f'{mentor_info["name"]}\nСпециальность: {mentor_info["speciality"]}\nЦена: {mentor_info["price"]}\nКонтакты: {mentor_info["contact"]}\nОписание: {mentor_info["description"]}'
         except Exception as e:
             print(f"An error occurred on step get_mentor_info_from_db: {e}")
 
